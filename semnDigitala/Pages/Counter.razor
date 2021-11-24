@@ -1,0 +1,29 @@
+﻿@page "/counter"
+@inject HttpClient http;
+@using semnDigitala.Data;
+@using System.Text;
+@using Newtonsoft.Json;
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private async void IncrementCount()
+    {
+        currentCount++;
+        PDF pdf = new PDF();
+        pdf.path = "er";
+        string json = JsonConvert.SerializeObject(pdf); //transform obiectul de tip elev intr-un json pentru a apela api-ul
+
+
+        var continut = new StringContent(json, Encoding.UTF8, "application/json"); 
+
+        var response = await http.PostAsync("https://localhost:44304/api/semnatura/semnare", continut); //apelarea api-ului
+        Console.WriteLine(response);
+    }
+}
